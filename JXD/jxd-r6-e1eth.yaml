@@ -58,6 +58,10 @@ esp32:
       sdkconfig_options:
         CONFIG_COMPILER_OPTIMIZATION_SPEED: y
 
+
+api:
+  id: api_id
+
 psram:
   mode: octal
   speed: 80MHz
