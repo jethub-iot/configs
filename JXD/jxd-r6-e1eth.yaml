@@ -23,7 +23,7 @@ esphome:
             lambda: return id(init_in_progress);
           then:
             - lambda: id(init_in_progress) = false;
-            - switch.turn_on: red_led
+            - switch.turn_on: status_led
 
 ota:
   - platform: esphome
@@ -119,8 +119,7 @@ text_sensor:
       on_value:
         then:
           - lambda: id(init_in_progress) = false;
-          - switch.turn_off: red_led
-          - switch.turn_on: green_led
+          - switch.turn_off: status_led
     mac_address:
       name: MAC
       id: mac1
@@ -168,9 +167,9 @@ button:
       - repeat:
           count: 3
           then:
-            - switch.turn_off: green_led
+            - switch.turn_on: status_led
             - delay: 0.5s
-            - switch.turn_on: green_led
+            - switch.turn_off: status_led
             - delay: 0.5s
 
 # show first available 1-wire sensor if address empty
@@ -241,8 +240,8 @@ sensor:
 
 switch:
   - platform: gpio
-    name: "Red led"
-    id: red_led
+    name: "Main led"
+    id: status_led
     pin: GPIO2
 # Relay 1
   - platform: gpio
