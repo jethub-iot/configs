@@ -1,0 +1,44 @@
+#substitutions:
+#  update_url: https://fw.jethome.ru/jxd-e1eth-nodisplay.json
+#  update_url_beta: https://fw.jethome.ru/jxd-e1eth-nodisplay.json
+
+packages:
+  jxd-r6-e1eth: !include jxd-e1-eth.yaml
+
+esphome:
+  project:
+    name: JetHub JXD R6-E1ETH
+    version: dev
+
+ota:
+  - platform: http_request
+    id: ota_http_request
+
+http_request:
+
+#update:
+#  - platform: http_request
+#    name: None
+#    id: update_http_request
+#    source: ${update_url}
+
+dashboard_import:
+  package_import_url: github://jethub-iot/configs/JXD/jxd-e1eth.yaml
+
+#switch:
+#  - platform: template
+#    id: beta_firmware
+#    name: Beta firmware
+#    icon: "mdi:test-tube"
+#    disabled_by_default: true
+#    entity_category: config
+#    optimistic: true
+#    restore_mode: RESTORE_DEFAULT_OFF
+#    on_turn_on:
+#      - logger.log: "OTA updates set to use Beta firmware"
+#      - lambda: id(update_http_request).set_source_url("${update_url_beta}");
+#      - component.update: update_http_request
+#    on_turn_off:
+#      - logger.log: "OTA updates set to use Production firmware"
+#      - lambda: id(update_http_request).set_source_url("${update_url}");
+#      - component.update: update_http_request

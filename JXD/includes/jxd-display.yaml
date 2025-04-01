@@ -1,0 +1,292 @@
+# JXD-DISPLAY rev 1.0
+pca9554:
+  - id: jxd_display_exp
+    pin_count: 16
+    address: 0x24
+
+binary_sensor:
+# joystick and buttons
+  - platform: gpio
+    name: "UP"
+    pin: 
+      pca9554: jxd_display_exp
+      number: 8
+      mode:
+        input: true
+      inverted: false
+    on_click:
+      - min_length: 50ms
+        max_length: 350ms
+        then:
+          - display_menu.up:
+  - platform: gpio
+    name: "DOWN"
+    pin: 
+      pca9554: jxd_display_exp
+      number: 9
+      mode:
+        input: true
+      inverted: false
+    on_press: 
+      - display_menu.down:
+    
+  - platform: gpio
+    name: "LEFT"
+    pin: 
+      pca9554: jxd_display_exp
+      number: 10
+      mode:
+        input: true
+      inverted: false
+    on_press:
+      then:
+        - display_menu.left:
+
+  - platform: gpio
+    name: "RIGHT"
+    pin: 
+      pca9554: jxd_display_exp
+      number: 11
+      mode:
+        input: true
+      inverted: false
+    on_press:
+      then:
+        - display_menu.right:
+
+  - platform: gpio
+    name: "CENTER"
+    pin: 
+      pca9554: jxd_display_exp
+      number: 12
+      mode:
+        input: true
+      inverted: false
+    on_press:
+      then:
+        - display_menu.enter:
+
+  - platform: gpio
+    name: "ESC"
+    pin: 
+      pca9554: jxd_display_exp
+      number: 13
+      mode:
+        input: true
+      inverted: false
+    on_press: 
+      then:
+        - display_menu.show_main:
+
+  - platform: gpio
+    name: "ENT"
+    pin: 
+      pca9554: jxd_display_exp
+      number: 14
+      mode:
+        input: true
+      inverted: false
+    on_press:
+      then:
+        - display_menu.enter:
+# joystick and buttons
+
+# menu
+
+font:
+  - file: './fonts/ARIAL.ttf'
+    id: font1
+    size: 12
+
+display:
+  - platform: ssd1306_i2c
+    id: display1
+  # - platform: ssh1106
+    # model: "SSD1306 128x64"
+    model: "SH1106_128X64"
+    address: 0x3C
+    lambda: |-
+      const auto width = it.get_width();
+      const auto height = it.get_height();
+
+      if (id(display_menu).is_active()) {
+        it.menu(0, 0, id(display_menu), width, height);
+      } else {
+        it.print(0, 0, id(font1), "Menu is hidden, other drawing would go here here");
+      }
+    # pages:
+    #   - id: main
+
+    # lambda: |-
+      # it.print(0, 0, id(font1), "JetHome");
+      # it.strftime(0, 55, id(font1), TextAlign::BASELINE_LEFT, "%H:%M:%S", id(sntp_time).now());
+
+# Menu start
+
+
+# Reports the WiFi signal strength/RSSI in dB
+# sensors:
+#   - platform: wifi_signal
+#     name: "WiFi Signal dB"
+#     id: wifi_signal_db
+#     update_interval: 3s
+
+graphical_display_menu:
+  id: display_menu
+  font: font1
+  display: display1
+  on_redraw:
+    then:
+      component.update: display1
+  active: true
+  mode: joystick
+  items:
+    - type: menu
+      text: 'Info'
+      id: info_submenu
+      on_enter:
+        then:
+      items:
+        - type: label
+          text: !lambda |-
+            return "IP: " + id(ip).state;
+        - type: label
+          text: !lambda |-
+            return "MC: " + id(mac1).state;
+        # - type: label
+        #   text: !lambda |-
+        #     return "VIN: " + id(vin_meas).state;
+        - type: back
+          text: "Back"
+
+    - type: menu
+      text: 'Switch'
+      id: switch_submenu
+      on_enter:
+        then:
+      items:
+        - type: switch
+          immediate_edit: true
+          text: 'Relay 1'
+          # on_text: 'Bright'
+          # off_text: 'Dark'
+          switch: relay_1
+          on_enter:
+            then:
+              lambda: 'it->get_text().c_str();'
+          # on_leave:
+          #   then:
+          on_value:
+            then:
+              lambda: 'it->get_text().c_str();'
+
+        - type: switch
+          immediate_edit: true
+          text: 'Relay 2'
+          # on_text: 'Bright'
+          # off_text: 'Dark'
+          switch: relay_2
+          on_enter:
+            then:
+              lambda: 'it->get_text().c_str();'
+          # on_leave:
+          #   then:
+          on_value:
+            then:
+              lambda: 'it->get_text().c_str();'
+
+        - type: switch
+          immediate_edit: true
+          text: 'Relay 3'
+          # on_text: 'Bright'
+          # off_text: 'Dark'
+          switch: relay_3
+          on_enter:
+            then:
+              lambda: 'it->get_text().c_str();'
+          # on_leave:
+          #   then:
+          on_value:
+            then:
+              lambda: 'it->get_text().c_str();'
+
+        - type: switch
+          immediate_edit: true
+          text: 'Relay 4'
+          # on_text: 'Bright'
+          # off_text: 'Dark'
+          switch: relay_4
+          on_enter:
+            then:
+              lambda: 'it->get_text().c_str();'
+          # on_leave:
+          #   then:
+          on_value:
+            then:
+              lambda: 'it->get_text().c_str();'
+
+        - type: switch
+          immediate_edit: true
+          text: 'Relay 5'
+          # on_text: 'Bright'
+          # off_text: 'Dark'
+          switch: relay_5
+          on_enter:
+            then:
+              lambda: 'it->get_text().c_str();'
+          # on_leave:
+          #   then:
+          on_value:
+            then:
+              lambda: 'it->get_text().c_str();'
+
+        - type: switch
+          immediate_edit: true
+          text: 'Relay 6'
+          # on_text: 'Bright'
+          # off_text: 'Dark'
+          switch: relay_6
+          on_enter:
+            then:
+              lambda: 'it->get_text().c_str();'
+          # on_leave:
+          #   then:
+          on_value:
+            then:
+              lambda: 'it->get_text().c_str();'
+
+        # - type: select
+        #   immediate_edit: false
+        #   select: mode
+        #   on_enter:
+        #     then:
+        #       lambda: "it->get_text().c_str();"
+        #   on_leave:
+        #     then:
+        #       lambda: "it->get_text().c_str();"
+        #   on_value:
+        #     then:
+        #       lambda: "it->get_text().c_str();"
+
+
+        - type: back
+          text: "Back"
+
+    # - type: label
+    #   text: !lambda |-
+    #     return id(wifi_ip).state;
+    # - type: label
+    #   text: 'Label 1'
+    # - type: label
+    #   text: !lambda |-
+    #     return "Templated label";
+
+# select:
+#   - platform: template
+#     name: Mode
+#     id: mode
+#     optimistic: true
+#     options:
+#      - "Direct"
+#      - "Bind"
+#     initial_option: "Direct"
