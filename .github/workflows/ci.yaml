@@ -1,10 +1,12 @@
 name: JetHub Configs CI
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - 'JXD/**'
       - 'config_list.yaml'
+      - '.github/workflows/ci.yaml'
   pull_request:
     paths:
       - 'JXD/**'
@@ -30,7 +32,7 @@ jobs:
         id: load_configs
         shell: bash
         run: |
-          configs=$(python -c "import yaml; f = open('configlist.yaml'); config = yaml.safe_load(f); print(' '.join([item['file'] for item in config['configs']]))")
+          configs=$(python -c "import yaml; f = open('configlist.yaml'); config = yaml.safe_load(f); print(' '.join([item['file'] for item in config]))")
           echo "Found configs: $configs"
           echo "configs=$configs" >> $GITHUB_OUTPUT
 
