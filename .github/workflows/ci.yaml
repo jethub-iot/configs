@@ -1,0 +1,71 @@
+name: JetHub Configs CI
+
+on:
+  push:
+    paths:
+      - 'JXD/**'
+      - 'config_list.yaml'
+  pull_request:
+    paths:
+      - 'JXD/**'
+      - 'config_list.yaml'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Check CI
+    steps:
+      - name: ⤵️ Check out code
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: pip install esphome PyYAML
+
+      - name: 🚀 Load config list from YAML
+        id: load_configs
+        shell: bash
+        run: |
+          configs=$(python -c "import yaml; f = open('configlist.yaml'); config = yaml.safe_load(f); print(' '.join([item['file'] for item in config['configs']]))")
+          echo "Found configs: $configs"
+          echo "configs=$configs" >> $GITHUB_OUTPUT
+
+      - name: 🚀 Compile ESPHome configs
+        id: compile_configs
+        shell: bash
+        run: |
+          mkdir -p build_output
+          exec >build.log 2>&1
+          exit_code=0
+          for config in ${{ steps.load_configs.outputs.configs }}; do
+            echo "Compile: $config"
+            esphome compile "$config" --output-dir build_output || { echo "Error compile $config"; exit_code=1; }
+          done
+          exit $exit_code
+
+      - name: Upload Build Log Artifact
+        if: github.event_name == 'pull_request' || github.event_name == 'push'
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log
+          path: build.log
+
+      - name: Upload Binaries Artifact
+        if: success() && (github.event_name == 'pull_request' || github.event_name == 'push')
+        uses: actions/upload-artifact@v4
+        with:
+          name: compiled-binaries
+          path: build_output/**
+
+      - name: Publish Release Assets
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.event.release.tag_name }}
+          files: build_output/**
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

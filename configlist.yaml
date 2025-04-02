@@ -1,0 +1,4 @@
+- device: JXD R6-E1ETH-DISPLAY
+  file: JXD/jxd-r6-e1eth-display-factory.yaml
+- device: JXD R6-E1ETH
+  file: JXD/jxd-r6-e1eth-factory.yaml
