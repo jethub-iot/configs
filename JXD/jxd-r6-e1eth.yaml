@@ -8,7 +8,7 @@ substitutions:
 #  display: !include includes/jxd-display.yaml
 
 esphome:
-  name: "jxd-r6-e1eth"
+  name: jxd-r6-e1eth
   name_add_mac_suffix: true
   friendly_name: ${friendly_name}
   min_version: 2025.3.3
@@ -24,9 +24,6 @@ esphome:
           then:
             - lambda: id(init_in_progress) = false;
             - switch.turn_on: status_led
-
-ota:
-  - platform: esphome
 
 time:
 # Real time clock PCF8563
@@ -61,6 +58,10 @@ esp32:
 
 api:
   id: api_id
+
+ota:
+  - platform: esphome
+    id: ota_esphome
 
 psram:
   mode: octal
@@ -243,7 +244,7 @@ sensor:
 
 switch:
   - platform: gpio
-    name: "Main led"
+    name: "Status led"
     id: status_led
     pin: GPIO2
 # Relay 1
