@@ -5,67 +5,82 @@ on:
   push:
     paths:
       - 'JXD/**'
-      - 'config_list.yaml'
+      - 'configlist.yml'
       - '.github/workflows/ci.yaml'
   pull_request:
     paths:
       - 'JXD/**'
-      - 'config_list.yaml'
+      - 'configlist.yml'
+  release:
+    types: [published]
 
 jobs:
-  build:
+  generate-matrix:
     runs-on: ubuntu-latest
-    name: Check CI
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
       - name: ⤵️ Check out code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+
+      - name: Setup Python for matrix generation
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install yq
+        run: |
+          sudo wget https://github.com/mikefarah/yq/releases/download/v4.45.1/yq_linux_amd64 -O /usr/bin/yq
+          sudo chmod +x /usr/bin/yq
+
+      - name: Generate matrix from configlist.yml
+        id: set-matrix
+        run: |
+          matrix=$(yq eval -o=json '{"include": .configs}' configlist.yaml)
+          echo "Generated matrix: $matrix"
+          echo "matrix<<EOF" >> $GITHUB_OUTPUT
+          echo "$matrix" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+  build:
+    needs: generate-matrix
+    runs-on: ubuntu-latest
+    name: Check CI - ${{ matrix.device }}
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.generate-matrix.outputs.matrix) }}
+    steps:
+      - name: ⤵️ Check out code
+        uses: actions/checkout@v4
 
       - name: Setup Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.x'
 
       - name: Install dependencies
         run: pip install esphome PyYAML
 
-      - name: 🚀 Load config list from YAML
-        id: load_configs
-        shell: bash
-        run: |
-          configs=$(python -c "import yaml; f = open('configlist.yaml'); config = yaml.safe_load(f); print(' '.join([item['file'] for item in config]))")
-          echo "Found configs: $configs"
-          echo "configs=$configs" >> $GITHUB_OUTPUT
-
-      - name: 🚀 Compile ESPHome configs
-        id: compile_configs
+      - name: 🚀 Compile ESPHome config for ${{ matrix.device }}
+        id: compile
         shell: bash
         run: |
           mkdir -p build_output
-          exec >build.log 2>&1
-          exit_code=0
-          for config in ${{ steps.load_configs.outputs.configs }}; do
-            echo "Compile: $config"
-            esphome compile "$config" --output-dir build_output || { echo "Error compile $config"; exit_code=1; }
-          done
-          exit $exit_code
+          echo "Compiling ${{ matrix.file }} for device ${{ matrix.device }}"
+          esphome compile "${{ matrix.file }}" || { echo "Error compiling ${{ matrix.file }}"; exit 1; }
+          find .
+          find ./${{ matrix.device }}.bin -type f -exec cp {} build_output/ \;
 
       - name: Upload Build Log Artifact
         if: github.event_name == 'pull_request' || github.event_name == 'push'
         uses: actions/upload-artifact@v4
         with:
-          name: build-log
-          path: build.log
-
-      - name: Upload Binaries Artifact
-        if: success() && (github.event_name == 'pull_request' || github.event_name == 'push')
-        uses: actions/upload-artifact@v4
-        with:
-          name: compiled-binaries
+          name: build-log-${{ matrix.device }}
           path: build_output/**
 
       - name: Publish Release Assets
         if: github.event_name == 'release'
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.event.release.tag_name }}
           files: build_output/**
