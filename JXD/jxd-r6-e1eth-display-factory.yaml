@@ -1,0 +1,26 @@
+#substitutions:
+#  update_url: https://fw.jethome.ru/jxd-e1eth-nodisplay.json
+#  update_url_beta: https://fw.jethome.ru/jxd-e1eth-nodisplay.json
+
+packages:
+  jxd-r6-e1eth: github://jethub-iot/configs/JXD/jxd-r6-e1eth-display.yaml
+
+esphome:
+  project:
+    name: JetHub.JXD R6-E1ETH-D
+    version: dev
+
+ota:
+  - platform: http_request
+    id: ota_http_request
+
+http_request:
+
+#update:
+#  - platform: http_request
+#    name: None
+#    id: update_http_request
+#    source: ${update_url}
+
+dashboard_import:
+  package_import_url: github://jethub-iot/configs/JXD/jxd-r6-e1eth-display.yaml
