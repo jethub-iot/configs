@@ -7,7 +7,7 @@ packages:
 
 esphome:
   project:
-    name: JetHub JXD R6-E1ETH
+    name: JetHub.JXD R6-E1ETH
     version: dev
 
 ota:

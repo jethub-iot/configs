@@ -25,6 +25,18 @@ esphome:
             - lambda: id(init_in_progress) = false;
             - switch.turn_on: status_led
 
+
+esp32:
+  board: esp32dev
+  flash_size: 8MB
+  framework:
+      type: esp-idf
+      version: latest
+      # Custom sdkconfig options
+      sdkconfig_options:
+        CONFIG_COMPILER_OPTIMIZATION_SPEED: y
+
+
 time:
 # Real time clock PCF8563
   - platform: pcf8563
@@ -44,17 +56,6 @@ time:
     on_time_sync:
       then:
         pcf8563.write_time:
-
-esp32:
-  board: esp32dev
-  flash_size: 8MB
-  framework:
-      type: esp-idf
-      version: latest
-      # Custom sdkconfig options
-      sdkconfig_options:
-        CONFIG_COMPILER_OPTIMIZATION_SPEED: y
-
 
 api:
   id: api_id
