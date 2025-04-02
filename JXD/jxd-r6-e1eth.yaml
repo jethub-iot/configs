@@ -129,22 +129,6 @@ text_sensor:
       name: MAC
       id: mac1
 
-
-# uart:
-#   tx_pin: GPIO33
-#   rx_pin: GPIO34
-#   baud_rate: 9600
-
-#   debug:
-#     direction: BOTH
-#     dummy_receiver: true
-#     #after:
-#     #  delimiter: "\n"
-#     sequence:
-#       - lambda: UARTDebug::log_string(direction, bytes);
-#       - uart.write: 'Hello World' 
-
-
 i2c:
   sda: 5
   scl: 4

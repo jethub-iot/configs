@@ -22,8 +22,5 @@ http_request:
 #    id: update_http_request
 #    source: ${update_url}
 
-esp32_ble:
-  name: jxd-r6-e1eth
-
 dashboard_import:
   package_import_url: github://jethub-iot/configs/JXD/jxd-r6-e1eth.yaml
