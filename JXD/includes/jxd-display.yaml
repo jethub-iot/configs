@@ -8,7 +8,7 @@ binary_sensor:
 # joystick and buttons
   - platform: gpio
     name: "UP"
-    pin: 
+    pin:
       pca9554: jxd_display_exp
       number: 8
       mode:
@@ -21,18 +21,18 @@ binary_sensor:
           - display_menu.up:
   - platform: gpio
     name: "DOWN"
-    pin: 
+    pin:
       pca9554: jxd_display_exp
       number: 9
       mode:
         input: true
       inverted: false
-    on_press: 
+    on_press:
       - display_menu.down:
-    
+
   - platform: gpio
     name: "LEFT"
-    pin: 
+    pin:
       pca9554: jxd_display_exp
       number: 10
       mode:
@@ -44,7 +44,7 @@ binary_sensor:
 
   - platform: gpio
     name: "RIGHT"
-    pin: 
+    pin:
       pca9554: jxd_display_exp
       number: 11
       mode:
@@ -56,7 +56,7 @@ binary_sensor:
 
   - platform: gpio
     name: "CENTER"
-    pin: 
+    pin:
       pca9554: jxd_display_exp
       number: 12
       mode:
@@ -68,19 +68,19 @@ binary_sensor:
 
   - platform: gpio
     name: "ESC"
-    pin: 
+    pin:
       pca9554: jxd_display_exp
       number: 13
       mode:
         input: true
       inverted: false
-    on_press: 
+    on_press:
       then:
         - display_menu.show_main:
 
   - platform: gpio
     name: "ENT"
-    pin: 
+    pin:
       pca9554: jxd_display_exp
       number: 14
       mode:
@@ -94,7 +94,9 @@ binary_sensor:
 # menu
 
 font:
-  - file: './fonts/ARIAL.ttf'
+  - file:
+      type: gfonts
+      family: Arimo
     id: font1
     size: 12
 
