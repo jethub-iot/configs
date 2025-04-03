@@ -69,7 +69,16 @@ jobs:
           echo "Compiling ${{ matrix.file }} for device ${{ matrix.device }}"
           esphome compile "${{ matrix.file }}" || { echo "Error compiling ${{ matrix.file }}"; exit 1; }
           find .
-          find ./${{ matrix.device }}.bin -type f -exec cp {} build_output/ \;
+          filedir=$(echo "${{ matrix.device }}" | tr '[:upper:]' '[:lower:]' | tr ' ' '-')
+
+          firmware_path=$(find . -type f -path "*/${filedir}/firmware.factory.bin" -print -quit)
+          if [ -n "$firmware_path" ]; then
+            echo "Found firmware at: $firmware_path"
+            cp "$firmware_path" "build_output/${filedir}.bin"
+          else
+            echo "::error::Firmware file not found in any */${normalized_name}/ directory"
+            exit 1
+          fi
 
       - name: Upload Build Log Artifact
         if: github.event_name == 'pull_request' || github.event_name == 'push'
