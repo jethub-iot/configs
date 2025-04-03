@@ -1,5 +1,5 @@
 configs:
-  - device: JXD R6-E1ETH-HMID
+  - device: JXD R6-E1ETH-HMI
     file: JXD/jxd-r6-e1eth-hmi-factory.yaml
   - device: JXD R6-E1ETH
     file: JXD/jxd-r6-e1eth-factory.yaml
