@@ -94,11 +94,9 @@ binary_sensor:
 # menu
 
 font:
-  - file:
-      type: gfonts
-      family: Open Sans
+  - file: './fonts/GohuFont11NerdFontMono-Regular.ttf'
     id: font1
-    size: 12
+    size: 11
 
 display:
   - platform: ssd1306_i2c
