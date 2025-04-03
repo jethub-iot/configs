@@ -96,7 +96,7 @@ binary_sensor:
 font:
   - file:
       type: gfonts
-      family: Arimo
+      family: Lato
     id: font1
     size: 12
 
