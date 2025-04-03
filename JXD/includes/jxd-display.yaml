@@ -96,7 +96,7 @@ binary_sensor:
 font:
   - file:
       type: gfonts
-      family: Lato
+      family: Open Sans
     id: font1
     size: 12
 
