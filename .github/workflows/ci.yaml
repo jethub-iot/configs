@@ -23,17 +23,17 @@ jobs:
       - name: ⤵️ Check out code
         uses: actions/checkout@v4
 
-      - name: Setup Python for matrix generation
+      - name: 🔨 Setup Python for matrix generation
         uses: actions/setup-python@v5
         with:
           python-version: '3.x'
 
-      - name: Install yq
+      - name: 🔨 Install yq
         run: |
           sudo wget https://github.com/mikefarah/yq/releases/download/v4.45.1/yq_linux_amd64 -O /usr/bin/yq
           sudo chmod +x /usr/bin/yq
 
-      - name: Generate matrix from configlist.yml
+      - name: 🔀 Generate matrix from configlist.yml
         id: set-matrix
         run: |
           matrix=$(yq eval -o=json '{"include": .configs}' configlist.yaml)
@@ -53,12 +53,12 @@ jobs:
       - name: ⤵️ Check out code
         uses: actions/checkout@v4
 
-      - name: Setup Python
+      - name: 🔨 Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.x'
 
-      - name: Install dependencies
+      - name: 🔨 Install dependencies
         run: pip install esphome PyYAML
 
       - name: 🚀 Compile ESPHome config for ${{ matrix.device }}
@@ -80,14 +80,14 @@ jobs:
             exit 1
           fi
 
-      - name: Upload Build Log Artifact
+      - name:  ⤴️ Upload Build Artifact
         if: github.event_name == 'pull_request' || github.event_name == 'push'
         uses: actions/upload-artifact@v4
         with:
-          name: build-log-${{ matrix.device }}
+          name: build-${{ matrix.device }}
           path: build_output/**
 
-      - name: Publish Release Assets
+      - name:  ⤴️🎉 Publish Release Assets
         if: github.event_name == 'release'
         uses: softprops/action-gh-release@v2
         with:
