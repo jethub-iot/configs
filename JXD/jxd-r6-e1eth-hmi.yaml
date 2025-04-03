@@ -1,6 +1,6 @@
 substitutions:
-  friendly_name: JXD-R6-E1ETH-D
-  device_description: JXD-R6-E1ETH-D v1
+  friendly_name: JXD-R6-E1ETH-HMI
+  device_description: JXD-R6-E1ETH-HMI v1
 # Production firmware
 
 # only for display version
@@ -8,7 +8,7 @@ packages:
   display: github://jethub-iot/configs/JXD/includes/jxd-display.yaml
 
 esphome:
-  name: jxd-r6-e1eth-d
+  name: jxd-r6-e1eth-hmi
   name_add_mac_suffix: true
   friendly_name: ${friendly_name}
   min_version: 2025.3.3
